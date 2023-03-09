@@ -1,39 +1,23 @@
 from numpy.random import default_rng
-
 import email
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib, ssl
-import sys
-import inspect
-import os
-currentdir = os.path.dirname(os.path.abspath(
-    inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
 
-
-sender_email = "sample_sender@gmail.com"
+sender_email = "sender@mail.com"
 password = input("Type your password and press enter:")
-
-message = MIMEMultipart("alternative")
-message["Subject"] = "multipart test-2"
-message["From"] = sender_email
-message["To"] = receiver_email
-
 
 SMTP_MAIL = "smtp.gmail.com"
 SMTP_PORT = 587
 
-def send_mail(from_email, from_password, to_mail, subject, mail_text):
+def send_mail(sender_email, from_password, receiver_mail, subject, mail_text):
     try:
         mail = smtplib.SMTP(SMTP_MAIL, SMTP_PORT)
-        mail.ehlo()
         mail.starttls()
-        mail.login(from_email, from_password)
+        mail.login(sender_email, from_password)
         mesaj = MIMEMultipart()
-        mesaj["From"] = from_email  # Gönderen
-        mesaj["To"] = to_mail  # Alıcı
+        mesaj["From"] = sender_email
+        mesaj["To"] = receiver_mail 
         mesaj["Subject"] = subject   # Konusu
 
         body = get_mail_body(mail_text)
@@ -52,9 +36,6 @@ def get_mail_body(body_text):
     body = f"""
             <!DOCTYPE html>
             <html>
-                <head>
-                    <title></title>
-                    </head>
                 <body> 
                     <p>{body_text}</p>
                 </body>
@@ -66,19 +47,19 @@ def get_mail_body(body_text):
 people = [
     {
         "name": "Person 0",
-        "email": "person@company.com.tr",
+        "email": "person@company.com",
         "tel": "0123456789",
         "adress": "address info"
     },
     {
         "name": "Person 1",
-        "email": "person1@company.com.tr",
+        "email": "person1@company.com",
         "tel": "0123456789",
         "adress": "address info"
     },
     {
         "name": "Person 2",
-        "email": "person2@company.com.tr",
+        "email": "person2@company.com",
         "tel": "0123456789",
         "adress": "address info"
     },
