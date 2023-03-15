@@ -3,67 +3,68 @@ import email
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib, ssl
+import sys
+import csv
 
-sender_email = "sender@mail.com"
-password = input("Type your password and press enter:")
 
 SMTP_MAIL = "smtp.gmail.com"
 SMTP_PORT = 587
+sender_email = "sender@mail.com"
+password = input("Type your password and press enter: ")
 
-def send_mail(sender_email, from_password, receiver_mail, subject, mail_text):
+csv_filename = 'sample_people_info.csv'
+mail_subj = "CompanyName Secret Santa"
+
+def send_mail(sender_email, from_password, receiver_mail, subject, person):
     try:
         mail = smtplib.SMTP(SMTP_MAIL, SMTP_PORT)
         mail.starttls()
         mail.login(sender_email, from_password)
-        mesaj = MIMEMultipart()
-        mesaj["From"] = sender_email
-        mesaj["To"] = receiver_mail 
-        mesaj["Subject"] = subject   # Konusu
+        mail_msg = MIMEMultipart()
+        mail_msg["From"] = sender_email
+        mail_msg["To"] = receiver_mail 
+        mail_msg["Subject"] = subject
 
-        body = get_mail_body(mail_text)
+        body = get_mail_body(person['name'], person['address'], person['tel'])
 
         body_text = MIMEText(body, "html")
-        mesaj.attach(body_text)
+        mail_msg.attach(body_text)
 
-        mail.sendmail(mesaj["From"], mesaj["To"], mesaj.as_string())
+        mail.sendmail(mail_msg["From"], mail_msg["To"], mail_msg.as_string())
         mail.close()
 
     except:
         print("Hata:", sys.exc_info()[0])
 
 
-def get_mail_body(body_text):
+def get_mail_body(name, address, tel):
     body = f"""
-            <!DOCTYPE html>
-            <html>
-                <body> 
-                    <p>{body_text}</p>
-                </body>
-            </html>
-            """
+<!DOCTYPE html>
+<html>
+    <body> 
+        <p>
+            <h1>Happy New Year!</h1>
+            <img src="https://ih1.redbubble.net/image.1894189567.3099/pp,840x830-pad,1000x1000,f8f8f8.jpg" width="500px">
+            <pre>
+*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥
+
+ The information of the lucky person you will give a gift is below: 
+      Name: {name}, 
+      Address: {address},
+      Tel: {tel}
+
+*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥
+            <pre>
+        </p>
+    </body>
+</html>"""
     return body
 
 
-people = [
-    {
-        "name": "Person 0",
-        "email": "person@company.com",
-        "tel": "0123456789",
-        "adress": "address info"
-    },
-    {
-        "name": "Person 1",
-        "email": "person1@company.com",
-        "tel": "0123456789",
-        "adress": "address info"
-    },
-    {
-        "name": "Person 2",
-        "email": "person2@company.com",
-        "tel": "0123456789",
-        "adress": "address info"
-    },
-]
+people = []
+with open(csv_filename) as f:
+    reader = csv.DictReader(f)
+    people = list(reader)
 
 COUNT_OF_PEOPLE = len(people)
 
@@ -99,24 +100,5 @@ for i in range(COUNT_OF_PEOPLE):
     person = people[list(random_numbers)[i]]
     recPerson = random_people[i]
 
-    send_mail(sender_email, password, f"{recPerson['email']}",
-              "CompanyName Secret Santa", f'''
-            <div id="particles-js" class="snow"></div>
-	        <div class="trees">
-	        <div class="tree">
-		    <img src="https://ih1.redbubble.net/image.1894189567.3099/pp,840x830-pad,1000x1000,f8f8f8.jpg" width="200px">
-	        </div>
-		    <div class="merry">
-			<h1>Happy New Year</h1>
-		    </div>
-            </div>
-            <pre>
-            Happy New Year. The information of the lucky person you will give a gift is below: 
-            ##############################################################################
-                Name: {person['name']}, 
-                Address: {person['adress']},
-                Tel: {person['tel']}
-            ##############################################################################
-            <pre>
-            ''')
+    send_mail(sender_email, password, f"{recPerson['email']}", mail_subj, person)
     print(f"Mail was sent to: {recPerson['email']}")
