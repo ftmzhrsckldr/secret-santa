@@ -25,9 +25,9 @@ def send_mail(sender_email, from_password, receiver_mail, subject, person):
         mail_msg["To"] = receiver_mail 
         mail_msg["Subject"] = subject
 
-        body = get_mail_body(person['name'], person['address'], person['tel'])
+        mail_body = get_mail_body(person['name'], person['address'], person['tel'])
 
-        body_text = MIMEText(body, "html")
+        body_text = MIMEText(mail_body, "html")
         mail_msg.attach(body_text)
 
         mail.sendmail(mail_msg["From"], mail_msg["To"], mail_msg.as_string())
@@ -38,27 +38,15 @@ def send_mail(sender_email, from_password, receiver_mail, subject, person):
 
 
 def get_mail_body(name, address, tel):
-    body = f"""
-<!DOCTYPE html>
-<html>
-    <body> 
-        <p>
-            <h1>Happy New Year!</h1>
-            <img src="https://ih1.redbubble.net/image.1894189567.3099/pp,840x830-pad,1000x1000,f8f8f8.jpg" width="500px">
-            <pre>
-*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥
 
- The information of the lucky person you will give a gift is below: 
-      Name: {name}, 
-      Address: {address},
-      Tel: {tel}
+    with open('mail_body.html', 'r') as file :
+        mail_body = file.read()
 
-*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥*̣̥☆·͙̥‧❄‧̩̥·‧•̥̩̥͙‧·‧̩̥˟͙☃˟͙‧̩̥·‧•̥̩̥͙‧·‧̩̥❄‧·͙̥̣☆*̣̥
-            <pre>
-        </p>
-    </body>
-</html>"""
-    return body
+    mail_body = mail_body.replace('person_name', name)
+    mail_body = mail_body.replace('person_address', address)
+    mail_body = mail_body.replace('person_tel', tel)
+
+    return mail_body
 
 
 people = []
